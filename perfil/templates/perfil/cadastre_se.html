@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block conteudo %}
+    <div class="row">
+        <div class="col-lg-6"></div>
+        <div class="col-lg-6">
+            <h3>
+                Cadastro
+            </h3>
+            <form action="" method="POST">
+                {{ user_form|crispy }}
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

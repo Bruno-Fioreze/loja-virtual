@@ -1,0 +1,24 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+    {% include 'head/head.html' %}
+    <title>Bem-Vindo!</title>
+</head>
+<body>
+    {% include 'nav/nav.html' %}
+    {% block conteudo %}
+
+    {% endblock %}
+    {% include 'footer/footer.html' %}
+    <script src="{% static './assets/bootstrap/js/jquery-3.2.1.slim.min.js' %}"></script>
+    <script src="{% static './assets/bootstrap/js/popper.min.js' %}"></script>
+    <script src="{% static './assets/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static './assets/font-awesome/js/all.js' %}"></script>
+    <script src="{% static './assets/custom/js/scripts.js' %}"></script>
+
+</body>
+
+</html>
+

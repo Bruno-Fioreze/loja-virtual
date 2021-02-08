@@ -1,0 +1,34 @@
+{% load omfilters %}
+<nav class="navbar navbar-dark bg-primary navbar-expand-lg">
+    <a class="navbar-brand" href="{% url 'listagem-produto' %}">Loja Virtual Bruno</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'listagem-produto' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            {% if request.session.carrinho %}
+            <li class="nav-item float-right">
+                <a class="nav-link nav-cart-link active" href="{% url 'carrinho' %}">
+                    <span class="nav-cart-text mr-1">
+                        Carrinho
+                    </span>
+                    <span class="nav-cart-count mr-1">
+                        <strong>{{request.session.carrinho|qtd_carrinho}}x</strong>
+                    </span>
+                    <span class="nav-cart-icon mr-2">
+                        <i class="fas fa-shopping-cart"></i>
+                    </span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Procurar">
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Procurar</button>
+        </form>
+    </div>
+</nav>
