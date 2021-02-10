@@ -4,13 +4,29 @@
 {% block conteudo %}
     <div class="row">
         <div class="col-lg-6"></div>
-        <div class="col-lg-6">
+        <div class="col">
             <h3>
                 Cadastro
             </h3>
-            <form action="" method="POST">
-                {{ user_form|crispy }}
-            </form>
+
+            <div class="row">
+
+                <div class="col-lg-9">
+                    <form  method="POST" class="mt-2 mb-2">
+                        {% csrf_token %}
+                        {{ user_form|crispy }}
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-primary btn-block btn-md">
+                                    Cadastrar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="col-lg-3"></div>
         </div>
     </div>
 

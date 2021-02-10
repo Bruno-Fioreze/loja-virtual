@@ -10,6 +10,18 @@ class PerfilForm(forms.ModelForm):
         exclude = ('user',)
 
 class UserForm(forms.ModelForm):
+
+    password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(),
+        label='Senha'
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,**kwargs)
+
+
+
     class Meta:
         model = User
         fields = ("first_name", "last_name", "username", "password", "email")
@@ -17,4 +29,6 @@ class UserForm(forms.ModelForm):
     def clean(self, *args, **kwargs):
         dados = self.data
         cleaned = self.cleaned_data
+        print(dados)
+
 
