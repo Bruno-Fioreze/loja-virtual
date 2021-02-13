@@ -1,33 +1,43 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views import View
-from .forms import PerfilUser, UserForm
+from .forms import PerfilUserForm, UserForm
 from .models import User, PerfilUser
+from django.views.decorators.http import require_http_methods
+
 
 
 class Perfil(View):
     template_name = "perfil/cadastre_se.html"
-
     def setup(self, *args, **kwargs):
-        super().setup(*args, **kwargs)
+        super().setup(*args,**kwargs)
         if self.request.user.is_authenticated:
-
-            dict_render = {
-                "user_form": UserForm(
-                    self.request.POST or None,
-
-                    instance=self.request.user,
+            self.dict_render = {
+                'userForm': UserForm(
+                    data=self.request.POST or None,
+                    usuario=self.request.user,
+                    instance=self.request.user
                 ),
-                "perfil_form": PerfilUser(self.request.POST or None),
+                'perfilUserForm': PerfilUserForm(
+                    data=self.request.POST or None,
+                )
             }
-            self.renderiza = render(self.request, self.template_name, dict_render)
         else:
-            dict_render = {
-                "user_form": UserForm(self.request.POST or None),
-                "perfil_form": PerfilUser(self.request.POST or None),
+            self.dict_render = {
+                'userForm': UserForm(
+                    data=self.request.POST or None,
+                ),
+                'perfilUserForm': PerfilUserForm(
+                    data=self.request.POST or None
+                )
             }
-            self.renderiza = render(self.request, self.template_name, dict_render)
+
+        self.renderiza = render(self.request, self.template_name, self.dict_render)
+
     def get(self, *args, **kwargs):
+        return self.renderiza
+
+    def post(self, *args, **kwargs):
         return self.renderiza
 
 
