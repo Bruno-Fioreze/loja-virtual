@@ -11,7 +11,10 @@ class Perfil(View):
     template_name = "perfil/cadastre_se.html"
     def setup(self, *args, **kwargs):
         super().setup(*args,**kwargs)
+        self.perfil_user = None
+
         if self.request.user.is_authenticated:
+            #self.perfil_user = PerfilUser.objects.get(user=self.request.user)
             self.dict_render = {
                 'userForm': UserForm(
                     data=self.request.POST or None,
@@ -32,13 +35,19 @@ class Perfil(View):
                 )
             }
 
+        self.perfilUserForm = self.dict_render["perfilUserForm"]
+        self.userForm = self.dict_render["userForm"]
         self.renderiza = render(self.request, self.template_name, self.dict_render)
 
     def get(self, *args, **kwargs):
         return self.renderiza
 
     def post(self, *args, **kwargs):
-        return self.renderiza
+        print(self.perfil_user)
+        if not self.perfilUserForm.is_valid() or not self.userForm.is_valid():
+            return self.renderiza
+        else:
+            print("é valido")
 
 
 class CadastrarPerfil(View):
