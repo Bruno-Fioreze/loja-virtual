@@ -26,7 +26,7 @@ class PerfilUser(models.Model):
     def clean(self):
         dict_erro = {}
         if re.search(r'[^0-9]',self.cep) or len(self.cep) < 8:
-            dict_erro.update({"ceo":"Cep Inválido"})
+            dict_erro.update({"cep":"Cep Inválido"})
 
         raise ValidationError(dict_erro)
 

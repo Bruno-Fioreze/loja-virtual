@@ -40,14 +40,16 @@ class UserForm(forms.ModelForm):
         username = cleaned.get("username")
         confirmacao_senha = cleaned.get("confirmacao_senha")
 
-        user_authentica = User.objects.get(username=username)
-        email_authentica = User.objects.get(email=email)
+        user_authentica = User.objects.filter(username=username).first()
+        email_authentica = User.objects.filter(email=email).first()
+
         usuario_existe  = "Usuário já existe."
         email_existe = "E-mail já existe."
         password_diferente = "As senhas não batem."
         password_tamanho = "Infome pelo menos 6 caracteres para a senha."
 
         if self.usuario:
+            print("entrou no update")
             if user_authentica:
                 if user_authentica.username != username:
                     mensagens_erro["username"] = usuario_existe
@@ -62,12 +64,12 @@ class UserForm(forms.ModelForm):
                     mensagens_erro["confirmacao_senha"] = password_diferente
                 if len(password) < 6:
                     mensagens_erro["password"] = password_tamanho
-
         else:
+
             if user_authentica:
                 mensagens_erro["username"] = usuario_existe
 
-            if email_authentica.email:
+            if user_authentica:
                 mensagens_erro["email"] = email_existe
 
             if password != confirmacao_senha:
@@ -79,3 +81,4 @@ class UserForm(forms.ModelForm):
 
         if mensagens_erro:
             raise (forms.ValidationError(mensagens_erro))
+
