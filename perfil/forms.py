@@ -49,7 +49,6 @@ class UserForm(forms.ModelForm):
         password_tamanho = "Infome pelo menos 6 caracteres para a senha."
 
         if self.usuario:
-            print("entrou no update")
             if user_authentica:
                 if user_authentica.username != username:
                     mensagens_erro["username"] = usuario_existe

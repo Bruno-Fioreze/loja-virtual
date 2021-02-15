@@ -11,10 +11,11 @@ import copy
 
 class Perfil(View):
     template_name = "perfil/cadastre_se.html"
+
     def setup(self, *args, **kwargs):
         super().setup(*args, **kwargs)
         self.perfil_user = None
-        self.carrinho = copy.deepcopy(self.request.session.get("carrinho",{}))
+        self.carrinho = copy.deepcopy(self.request.session.get("carrinho", {}))
         if self.request.user.is_authenticated:
             self.perfil_user = PerfilUser.objects.filter(user=self.request.user).first()
 
@@ -51,18 +52,27 @@ class Perfil(View):
         if not self.perfilUserForm.is_valid() or not self.userForm.is_valid():
             return self.renderiza
 
+        dict_user = {}
+        campos_nao_alteraveis = [
+            "password",
+            "username",
+            "confirmacao_senha"
+        ]
         email = self.userForm.cleaned_data.get("email")
         username = self.userForm.cleaned_data.get("username")
         password = self.userForm.cleaned_data.get("password")
 
         if self.request.user.is_authenticated:
-            user = User.objects.get(username=self.request.user.username)
-            user.email = email
+            for k, v in self.userForm.cleaned_data.items():
+                if k in campos_nao_alteraveis:
+                    continue
+                dict_user.update({k: v})
             if password:
-                user.set_password(password)
+                dict_user.update({"password": User.set_password(password)})
+            user = User.objects.filter(username=username).update(**dict_user)
 
             perfil_user = self.perfilUserForm.save(commit=False)
-            perfil_user.user = user
+            perfil_user.user = self.request.user
             perfil_user.save()
         else:
             user = self.userForm.save(commit=False)
@@ -80,7 +90,7 @@ class Perfil(View):
                 password=password
             )
             if auth:
-                login(self.request,user=user)
+                login(self.request, user=user)
 
         self.request.session["carrinho"] = self.carrinho
         self.request.session.save()
@@ -95,8 +105,10 @@ class CadastrarPerfil(View):
 class AtualizarPerfil(ListView):
     pass
 
+
 class LoginPerfil(ListView):
     pass
+
 
 class LogoutPerfil(ListView):
     pass
