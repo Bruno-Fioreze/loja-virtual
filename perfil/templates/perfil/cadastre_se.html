@@ -1,24 +1,17 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block conteudo %}
     <div class="container">
-        <form action="" method="POST">
+        <form id="form_atualizar_cadastrar" method="POST">
             <div class="row mb-2 mt-4">
                 <div class="col-lg-6 col-md-6 col-xs-6">
                     <h3>
                         Cadastro
                     </h3>
-
                     {% csrf_token %}
                     {{ userForm|crispy }}
-                    <div class="row">
-                        <div class="col">
-                            <button class="btn btn-primary btn-block btn-md">
-                                Cadastrar
-                            </button>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-xs-6">
                     <h3>
@@ -27,7 +20,22 @@
                     {{ perfilUserForm|crispy }}
                 </div>
             </div>
+            <div class="row">
+                <div class="col">
+                    <button id="btn_atualizar_cadastrar" type="button" class="btn btn-primary btn-block btn-md mt-3 mb-3" onclick="submit_form()">
+                        {% if not request.user.is_authenticated %}
+                            Cadastrar
+                        {% else %}
+                            Atualizar
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
         </form>
     </div>
-
+{% endblock %}
+{% block js_especifico %}
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="{% static '/js/perfil/cadastrar_atualizar.js' %}"></script>
+    <link rel="stylesheet" href="{% static '/css/perfil/cadastrar_atualizar.css' %}">
 {% endblock %}
