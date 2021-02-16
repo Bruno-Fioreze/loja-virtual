@@ -9,10 +9,10 @@ class PerfilUser(models.Model):
     idade = models.IntegerField()
     data_nascimento = models.DateTimeField()
     cpf = models.CharField(max_length=11, blank=False, null=False)
+    cep = models.CharField(max_length=8)
     endereco = models.CharField(max_length=255)
     complemento = models.CharField(max_length=50)
     bairro = models.CharField(max_length=150)
-    cep = models.CharField(max_length=8)
     cidade = models.CharField(max_length=255)
     estado = models.CharField(
         max_length=2,

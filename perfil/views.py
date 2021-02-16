@@ -3,10 +3,11 @@ from django.views.generic.list import ListView
 from django.views import View
 from .forms import PerfilUserForm, UserForm
 from .models import PerfilUser
-from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.hashers import make_password
 import copy
+import bcrypt
 
 
 class Perfil(View):
@@ -42,6 +43,8 @@ class Perfil(View):
 
         self.perfilUserForm = self.dict_render["perfilUserForm"]
         self.userForm = self.dict_render["userForm"]
+        if self.request.user.is_authenticated:
+            self.template_name = "perfil/atualizar.html"
         self.renderiza = render(self.request, self.template_name, self.dict_render)
 
     def get(self, *args, **kwargs):
@@ -52,24 +55,20 @@ class Perfil(View):
         if not self.perfilUserForm.is_valid() or not self.userForm.is_valid():
             return self.renderiza
 
-        dict_user = {}
-        campos_nao_alteraveis = [
-            "password",
-            "username",
-            "confirmacao_senha"
-        ]
         email = self.userForm.cleaned_data.get("email")
         username = self.userForm.cleaned_data.get("username")
         password = self.userForm.cleaned_data.get("password")
 
         if self.request.user.is_authenticated:
-            for k, v in self.userForm.cleaned_data.items():
-                if k in campos_nao_alteraveis:
-                    continue
-                dict_user.update({k: v})
+            user = get_object_or_404(
+                User, username=self.request.user.username)
             if password:
-                dict_user.update({"password": User.set_password(password)})
-            user = User.objects.filter(username=username).update(**dict_user)
+                user.set_password(password)
+            user.username = username
+            user.email = email
+            user.first_name = self.userForm.cleaned_data.get("first_name")
+            user.last_name = self.userForm.cleaned_data.get("last_name")
+            user.save()
 
             perfil_user = self.perfilUserForm.save(commit=False)
             perfil_user.user = self.request.user
@@ -91,7 +90,6 @@ class Perfil(View):
             )
             if auth:
                 login(self.request, user=user)
-
         self.request.session["carrinho"] = self.carrinho
         self.request.session.save()
         return self.renderiza
@@ -112,3 +110,10 @@ class LoginPerfil(ListView):
 
 class LogoutPerfil(ListView):
     pass
+
+
+def get_hash(valor):
+    print(valor)
+    hasher = "pbkdf2_sha256"
+    salt = "150000"
+    return make_password(valor, salt=salt, hasher=hasher)
