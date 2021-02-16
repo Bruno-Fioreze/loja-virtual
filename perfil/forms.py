@@ -3,6 +3,8 @@ from .models import PerfilUser
 from django.contrib.auth.models import User
 
 class PerfilUserForm(forms.ModelForm):
+
+
     class Meta:
         model = PerfilUser
         fields = '__all__'
