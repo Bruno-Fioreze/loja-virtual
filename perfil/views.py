@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
 import copy
-import bcrypt
+
 
 
 class Perfil(View):

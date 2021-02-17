@@ -95,7 +95,9 @@ ENV/
 # Rope project settings
 .ropeproject
 .idea
-static/
+static/admin
+static/assets
+static/debug_toolbar
 manage.py
 # mkdocs documentation
 /site
