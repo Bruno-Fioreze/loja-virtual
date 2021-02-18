@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block conteudo %}
+{% include 'mensagem/mensagem.html' %}
+
+
+<div class="card col-md-6 col-lg-6 col-sm-6 offset-md-3 offset-lg-3 offset-sm-3 justify-content-center mt-2 mb-2">
+    <div class="card-header">
+        <h5>
+            Login
+        </h5>
+    </div>
+    <div class="card-body">
+        <form action="{% url 'login-perfil' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Email</label>
+                <input name="email" type="email" class="form-control" placeholder="email@email.com">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input name="password" type="password" class="form-control" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-black">Login</button>
+            <button type="submit" class="btn btn-secondary">Register</button>
+        </form>
+
+        <div id="formFooter">
+            <a class="underlineHover" href="#">Esqueceu a senha ?</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js_especifico %}
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<link rel="stylesheet" href="{% static '/css/perfil/login.css' %}">
+{% endblock %}
