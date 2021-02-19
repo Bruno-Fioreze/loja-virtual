@@ -104,9 +104,17 @@ class AtualizarPerfil(ListView):
     pass
 
 
-class LoginPerfil(ListView):
-    pass
+class LoginPerfil(View):
+    def post(self, *args, **kwargs):
+        auth = authenticate(
+                self.request,
+                email=self.request.POST.get("username"),
+                password=self.request.POST.get("password")
+            )
+        print(auth)
 
+    def get(self, *args, **kwargs):
+        return render(self.request, "perfil/login.html")
 
 class LogoutPerfil(ListView):
     pass
