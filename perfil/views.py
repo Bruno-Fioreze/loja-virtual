@@ -4,10 +4,10 @@ from django.views import View
 from .forms import PerfilUserForm, UserForm
 from .models import PerfilUser
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
+from django.contrib import messages
 import copy
-
 
 
 class Perfil(View):
@@ -106,18 +106,23 @@ class AtualizarPerfil(ListView):
 
 class LoginPerfil(View):
     def post(self, *args, **kwargs):
-        auth = authenticate(
-                self.request,
-                email=self.request.POST.get("username"),
-                password=self.request.POST.get("password")
-            )
-        print(auth)
+        username = get_user(self.request.POST.get("email"))
+        user = authenticate(self.request, username=username, password=self.request.POST.get("password"))
+
+        if user is not None:
+            login(self.request, user)
+            messages.success(self.request, "Sucesso ao realizar login!")
+        else:
+            messages.error(self.request, "Ocorreu um erro ao realizar login!")
+        
+        return render(self.request, "perfil/login.html")
 
     def get(self, *args, **kwargs):
         return render(self.request, "perfil/login.html")
 
-class LogoutPerfil(ListView):
-    pass
+class LogoutPerfil(View):
+    def get(self, *args, **kwargs):
+        logout(self.request)
 
 
 def get_hash(valor):
@@ -125,3 +130,12 @@ def get_hash(valor):
     hasher = "pbkdf2_sha256"
     salt = "150000"
     return make_password(valor, salt=salt, hasher=hasher)
+
+
+
+# create a function to resolve email to username
+def get_user(email):
+    try:
+        return User.objects.get(email=email.lower())
+    except User.DoesNotExist:
+        return None

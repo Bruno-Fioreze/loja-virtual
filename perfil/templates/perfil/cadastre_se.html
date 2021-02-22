@@ -4,6 +4,7 @@
 
 {% block conteudo %}
     <div class="container">
+        {% include 'mensagem/mensagem.html' %}
         <form id="form_atualizar_cadastrar" method="POST">
             <div class="row mb-2 mt-4">
                 <div class="col-lg-6 col-md-6 col-xs-6">
@@ -14,9 +15,6 @@
                     {{ userForm|crispy }}
                 </div>
                 <div class="col-lg-6 col-md-6 col-xs-6">
-                    <h3>
-                        Perfil
-                    </h3>
                     {{ perfilUserForm|crispy }}
                 </div>
             </div>
