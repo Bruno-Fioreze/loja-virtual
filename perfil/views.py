@@ -1,12 +1,13 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.list import ListView
 from django.views import View
 from .forms import PerfilUserForm, UserForm
 from .models import PerfilUser
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 import copy
+from django.urls import reverse_lazy
 
 
 
@@ -111,13 +112,16 @@ class LoginPerfil(View):
                 email=self.request.POST.get("username"),
                 password=self.request.POST.get("password")
             )
-        print(auth)
+        return redirect(reverse_lazy("listagem-produto"))
 
     def get(self, *args, **kwargs):
         return render(self.request, "perfil/login.html")
 
 class LogoutPerfil(ListView):
-    pass
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect(reverse_lazy("listagem-produto"))
+    
 
 
 def get_hash(valor):
