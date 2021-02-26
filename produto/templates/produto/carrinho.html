@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% load omfilters %}
-{% block conteudo %}
 {% load static %}
-
+{% block conteudo %}
 
 
 <main class="container mt-4 mb-4">
@@ -12,52 +11,7 @@
             <h3>Carrinho de compras</h3>
             <p class="lead">Os produtos, quantidades e preços que você escolheu.</p>
 
-            <div class="table-responsive">
-                <table class="table">
-                    <tr>
-                        <th class="d-none d-lg-block">Imagem</th>
-                        <th>Produto</th>
-                        <th>V.</th>
-                        <th>QTD.</th>
-                        <th>Sub-Total</th>
-                    </tr>
-                    {% for cart in carrinho.values %}
-                        <tr>
-                            <td class="d-none d-lg-block">
-                                <img class="cart-img" src="{% get_media_prefix %}{{cart.img}}">
-                            </td>
-                            <td>
-                                <a href="{% url 'detalhe-produto' cart.slug %}">{{cart.nome_produto}}</a>
-                                <a class="ml-3" href="{% url 'remover-carrinho' cart.id_variacao %}">
-                                    <i class="fas fa-times-circle text-danger" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                            <td>{{cart.nome_variacao}}</td>
-                            <td>
-                                {{cart.quantidade}}x
-                                {% if cart.preco_unitario_promo %}
-                                    {{cart.preco_unitario_promo|formata_preco}}
-                                {% else %}
-                                    {{cart.preco_unitario|formata_preco}}
-                                {% endif %}
-                            </td>
-                            {% if cart.preco_promo %}
-                                <td>R$ {{cart.preco_promo|formata_preco}}</td>
-                            {% else %}
-                                <td>R$ {{cart.preco|formata_preco}}</td>
-                            {% endif %}
-                        </tr>
-                    {% empty%}
-                        <div class="row mt-3">
-                            <div class="col">
-                                <h3>Carrinho de compras</h3>
-                                <p class="lead">Carrinho sem produtos.</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-
-                </table>
-            </div>
+            {% include 'tabela/tabela_produtos.html' %}
         </div>
     </div>
     <div class="row mt-3">

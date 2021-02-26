@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
         ('produto', '0002_auto_20210203_2140'),
     ]
 
-    operations = [
+    operations = [ 
         migrations.AlterField(
             model_name='produto',
             name='descricao_slug',

@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.list import ListView
 from django.views import View
 from .forms import PerfilUserForm, UserForm
@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 import copy
+from django.urls import reverse_lazy
 
 
 class Perfil(View):
@@ -106,9 +107,6 @@ class AtualizarPerfil(ListView):
 
 class LoginPerfil(View):
     def post(self, *args, **kwargs):
-        username = get_user(self.request.POST.get("email"))
-        user = authenticate(self.request, username=username, password=self.request.POST.get("password"))
-
         if user is not None:
             login(self.request, user)
             messages.success(self.request, "Sucesso ao realizar login!")
@@ -117,12 +115,14 @@ class LoginPerfil(View):
         
         return render(self.request, "perfil/login.html")
 
+
     def get(self, *args, **kwargs):
         return render(self.request, "perfil/login.html")
 
-class LogoutPerfil(View):
-    def get(self, *args, **kwargs):
-        logout(self.request)
+class LogoutPerfil(ListView):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect(reverse_lazy("listagem-produto"))
 
 
 def get_hash(valor):
