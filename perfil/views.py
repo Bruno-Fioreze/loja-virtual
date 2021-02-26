@@ -6,9 +6,9 @@ from .models import PerfilUser
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
+from django.contrib import messages
 import copy
 from django.urls import reverse_lazy
-
 
 
 class Perfil(View):
@@ -107,12 +107,14 @@ class AtualizarPerfil(ListView):
 
 class LoginPerfil(View):
     def post(self, *args, **kwargs):
-        auth = authenticate(
-                self.request,
-                email=self.request.POST.get("username"),
-                password=self.request.POST.get("password")
-            )
-        return redirect(reverse_lazy("listagem-produto"))
+        if user is not None:
+            login(self.request, user)
+            messages.success(self.request, "Sucesso ao realizar login!")
+        else:
+            messages.error(self.request, "Ocorreu um erro ao realizar login!")
+        
+        return render(self.request, "perfil/login.html")
+
 
     def get(self, *args, **kwargs):
         return render(self.request, "perfil/login.html")
@@ -121,7 +123,6 @@ class LogoutPerfil(ListView):
     def get(self, request, *args, **kwargs):
         logout(request)
         return redirect(reverse_lazy("listagem-produto"))
-    
 
 
 def get_hash(valor):
@@ -129,3 +130,12 @@ def get_hash(valor):
     hasher = "pbkdf2_sha256"
     salt = "150000"
     return make_password(valor, salt=salt, hasher=hasher)
+
+
+
+# create a function to resolve email to username
+def get_user(email):
+    try:
+        return User.objects.get(email=email.lower())
+    except User.DoesNotExist:
+        return None
