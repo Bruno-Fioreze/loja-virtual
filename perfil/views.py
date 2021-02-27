@@ -122,7 +122,7 @@ class LoginPerfil(View):
             messages.error(self.request, "Ocorreu um erro ao realizar login!")
 
         return render(self.request, "perfil/login.html")
-
+    
     def get(self, *args, **kwargs):
         return render(self.request, "perfil/login.html")
 

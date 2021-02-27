@@ -5,6 +5,8 @@ from django.views.generic.detail import DetailView
 from django.views import View
 from .models import Produto, Variacao
 from django.forms.models import model_to_dict
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 
@@ -68,6 +70,7 @@ class AdicionarProduto(View):
         self.request.session["carrinho"] = carrinho
         return redirect(self.request.META["HTTP_REFERER"])
 
+
 class RemoverProduto(ListView):
     def get(self,*args,**kwargs):
         try:
@@ -90,9 +93,11 @@ class Carrinho(ListView):
         return render(self.request, "produto/carrinho.html",{"carrinho":carrinho})
 
 
-class FinalizarProduto(ListView):
-    pass
-
+class FinalizarProduto(View):
+    @method_decorator(login_required(login_url='/login/')) 
+    def get(self, request, *args, **kwargs):
+        
+        return render(request, "produto/finalizar_produto.html")
 
 def get_dict_carrinho(variacao, produto):
     return {"img":produto.img.name ,"quantidade":1, "preco_promo":variacao.preco_promo, "preco":variacao.preco,"nome_variacao":variacao.nome,"preco_unitario_promo":variacao.preco_promo,"preco_unitario":variacao.preco,"id_variacao":variacao.pk,"nome_produto":produto.nome,"slug":produto.slug}
