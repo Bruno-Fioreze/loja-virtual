@@ -107,14 +107,21 @@ class AtualizarPerfil(ListView):
 
 class LoginPerfil(View):
     def post(self, *args, **kwargs):
+        auth = authenticate(
+            self.request,
+            email=self.request.POST.get("username"),
+            password=self.request.POST.get("password")
+        )
+        username = get_user(self.request.POST.get("email"))
+        user = authenticate(self.request, username=username, password=self.request.POST.get("password"))
+
         if user is not None:
             login(self.request, user)
             messages.success(self.request, "Sucesso ao realizar login!")
         else:
             messages.error(self.request, "Ocorreu um erro ao realizar login!")
-        
-        return render(self.request, "perfil/login.html")
 
+        return render(self.request, "perfil/login.html")
 
     def get(self, *args, **kwargs):
         return render(self.request, "perfil/login.html")
@@ -125,15 +132,6 @@ class LogoutPerfil(ListView):
         return redirect(reverse_lazy("listagem-produto"))
 
 
-def get_hash(valor):
-    print(valor)
-    hasher = "pbkdf2_sha256"
-    salt = "150000"
-    return make_password(valor, salt=salt, hasher=hasher)
-
-
-
-# create a function to resolve email to username
 def get_user(email):
     try:
         return User.objects.get(email=email.lower())
