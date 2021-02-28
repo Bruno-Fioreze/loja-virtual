@@ -14,11 +14,9 @@ def qtd_carrinho(carrinho):
 
 @register.filter
 def valor_total_carrinho(carrinho):
-
     total = [
             item["preco_promo"] if item["preco_promo"] else item["preco"] for key,item in carrinho.items()
         ]
-
     return sum(
         total
     )

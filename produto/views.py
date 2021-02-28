@@ -93,11 +93,15 @@ class Carrinho(ListView):
         return render(self.request, "produto/carrinho.html",{"carrinho":carrinho})
 
 
-class FinalizarProduto(View):
+class FinalizarCarrinho(View): 
     @method_decorator(login_required(login_url='/login/')) 
     def get(self, request, *args, **kwargs):
         
-        return render(request, "produto/finalizar_produto.html")
+        dict_finalizar_carrinho = {
+            "usuario": self.request.user,
+            "carrinho": self.request.session["carrinho"]
+        }
+        return render(request, "produto/finalizar_carrinho.html", dict_finalizar_carrinho)
 
 def get_dict_carrinho(variacao, produto):
     return {"img":produto.img.name ,"quantidade":1, "preco_promo":variacao.preco_promo, "preco":variacao.preco,"nome_variacao":variacao.nome,"preco_unitario_promo":variacao.preco_promo,"preco_unitario":variacao.preco,"id_variacao":variacao.pk,"nome_produto":produto.nome,"slug":produto.slug}
