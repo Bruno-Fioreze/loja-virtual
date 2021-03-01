@@ -6,6 +6,7 @@ import re
 class Pedido(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     total = models.FloatField()
+    qtd_total = models.PositiveIntegerField() 
     status = models.CharField(
         default="C",
         max_length=50,
@@ -26,6 +27,7 @@ class ItemPedido(models.Model):
     produto = models.CharField(max_length=255)
     variacao = models.CharField(max_length=255)
     id_variacao = models.IntegerField()
+    preco = models.FloatField()
     preco_promo = models.FloatField(default=0)
     quantidade = models.IntegerField()
     imagem = models.CharField(max_length=2000)

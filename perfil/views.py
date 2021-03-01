@@ -96,16 +96,7 @@ class Perfil(View):
         return self.renderiza
 
 
-class CadastrarPerfil(View):
-    def post(self, *args, **kwargs):
-        print(self.request.POST)
-
-
-class AtualizarPerfil(ListView):
-    pass
-
-
-class LoginPerfil(View):
+class Login(View):
     def post(self, *args, **kwargs):
         auth = authenticate(
             self.request,
@@ -118,15 +109,16 @@ class LoginPerfil(View):
         if user is not None:
             login(self.request, user)
             messages.success(self.request, "Sucesso ao realizar login!")
+            return redirect(reverse_lazy("listagem-produto"))
         else:
             messages.error(self.request, "Ocorreu um erro ao realizar login!")
 
         return render(self.request, "perfil/login.html")
-
+    
     def get(self, *args, **kwargs):
         return render(self.request, "perfil/login.html")
 
-class LogoutPerfil(ListView):
+class Logout(ListView):
     def get(self, request, *args, **kwargs):
         logout(request)
         return redirect(reverse_lazy("listagem-produto"))

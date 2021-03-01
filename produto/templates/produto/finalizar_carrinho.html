@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load omfilters %}
+{% block conteudo  %}
+
+<div class="row mb-5">
+    <div class="col-lg">
+        <h2>Resumo da sua compra</h2>
+
+        <p class="lead">Dados do usuário</p>
+        <p>Caso precise editar, <a href="{% url 'perfil' %}">clique aqui</a></p>
+        <div class="row">
+            <div class="col-lg-2">Nome:</div>
+            <div class="col-lg-4">{{ usuario.first_name }}</div>
+            <div class="col-lg-2">Sobrenome:</div>
+            <div class="col-lg-4">{{ usuario.last_name }}</div>
+
+            <div class="col-lg-2">Idade:</div>
+            <div class="col-lg-4">{{ usuario.perfil.idade }}</div>
+            <div class="col-lg-2">Nascimento:</div>
+            <div class="col-lg-4">{{ usuario.perfil.data_nascimento }}</div>
+
+            <div class="col-lg-2">CPF:</div>
+            <div class="col-lg-4">{{ usuario.perfil.cpf }}</div>
+            <div class="col-lg-2">E-mail:</div>
+            <div class="col-lg-4">{{ usuario.email }}</div>
+        </div>
+
+        <p class="lead">Dados de endereço</p>
+        <p>Caso precise editar, <a href="{% url 'perfil' %}">clique aqui</a></p>
+        <div class="row">
+            <div class="col-lg-2">Endereço:</div>
+            <div class="col-lg-4">{{ usuario.perfil.endereco }}</div>
+            <div class="col-lg-2">Número:</div>
+            <div class="col-lg-4">{{ usuario.perfil.numero }}</div>
+
+            <div class="col-lg-2">Complemento:</div>
+            <div class="col-lg-4">{{ usuario.perfil.complemento }}</div>
+            <div class="col-lg-2">Nascimento:</div>
+            <div class="col-lg-4">{{ usuario.perfil.bairro }}</div>
+
+            <div class="col-lg-2">Cidade:</div>
+            <div class="col-lg-4">{{ usuario.perfil.cidade }}</div>
+            <div class="col-lg-2">Estado:</div>
+            <div class="col-lg-4">{{ usuario.perfil.estado }}</div>
+
+            <div class="col-lg-2">CEP:</div>
+            <div class="col-lg-4">{{ usuario.perfil.cep }}</div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col">
+        <h3>Carrinho de compras</h3>
+        <p class="lead">Os produtos, quantidades e preços que você escolheu.</p>
+
+        {% include 'tabelas/tabela_produtos.html' %} 
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <h3>
+            Total Carrinho: {{ carrinho|valor_total_carrinho|formata_preco }}
+        </h3>
+    </div>
+</div
+
+<div class="row">
+    <div class="col">
+        <a class="btn btn-block btn-primary btn-lg" href="{% url 'finalizar-pedido' %}">
+            Realizar pedido e pagar
+        </a>
+    </div>
+</div>
+
+{% endblock  %}
+

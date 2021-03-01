@@ -10,6 +10,19 @@
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'listagem-produto' %}">Home <span class="sr-only">(current)</span></a>
             </li>
+            {% if request.user.is_authenticated %}
+                <a class="nav-link nav-cart-link active" href="{% url 'logout' %}">
+                    <span class="nav-cart-text mr-1">
+                        Logout
+                    </span>
+                </a> 
+             {% else %}
+                <a class="nav-link nav-cart-link active" href="{% url 'login' %}">
+                    <span class="nav-cart-text mr-1">
+                        Logar
+                    </span>
+                </a>    
+            {% endif %}
             {% if request.session.carrinho %}
             <li class="nav-item float-right">
                 <a class="nav-link nav-cart-link active" href="{% url 'carrinho' %}">

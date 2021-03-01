@@ -11,7 +11,7 @@
             <h3>Carrinho de compras</h3>
             <p class="lead">Os produtos, quantidades e preços que você escolheu.</p>
 
-            {% include 'tabela/tabela_produtos.html' %}
+            {% include 'tabelas/tabela_produtos.html' %} 
         </div>
     </div>
     <div class="row mt-3">
@@ -28,9 +28,15 @@
             </div>
         </div>
         <div class="col-lg mt-auto">
-            <a class="btn btn-lg btn-block btn-primary" href="#">
-                Finalizar a compra
-            </a>
+            {% if request.user.is_authenticated %}
+                <a class="btn btn-lg btn-block btn-primary" href="{% url 'finalizar-carrinho' %}">
+                    Finalizar a compra
+                </a>
+            {% else %}
+                 <a class="btn btn-lg btn-block btn-primary" href="{% url 'login' %}">
+                    Logar
+                </a>
+            {% endif %}
         </div>
     </div>
 </main>
