@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -9,8 +10,23 @@ from produto.models import Variacao
 from .models import Pedido, ItemPedido
 
 
-class PagarPedido(View):
-    pass
+
+class DispatchLoginRequired(View):
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return redirect(reverse_lazy("login"))
+
+        return super().dispatch(request, *args, **kwargs)
+
+class PagarPedido(DispatchLoginRequired, DetailView):
+    template_name = "pedido/pagar_pedido.html"
+    model = Pedido
+    pk_url_kwarg = "pk" 
+    context_object_name = "pedido"
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset()
+        return queryset.filter(usuario=self.request.user)
+        
 
 class FinalizarPedido(View):
     template_name = "pedido/pagar_pedido.html"

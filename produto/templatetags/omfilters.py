@@ -20,3 +20,15 @@ def valor_total_carrinho(carrinho):
     return sum(
         total
     )
+
+@register.filter
+def get_status(status):
+    dict_status = {
+        "A":"Aprovado",
+        "C":"Criado",
+        "R":"Reprovado",
+        "P":"Pendente",
+        "E":"Enviado",
+        "F":"Finalizado"
+    }
+    return dict_status.get(status)
