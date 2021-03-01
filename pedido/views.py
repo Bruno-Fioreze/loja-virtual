@@ -3,12 +3,16 @@ from django.views.generic.list import ListView
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from produto.models import Variacao
+from .models import Pedido, ItemPedido
 
 
 class PagarPedido(View):
+    pass
+
+class FinalizarPedido(View):
     template_name = "pedido/pagar_pedido.html"
     @method_decorator(login_required(login_url='/login/'))  
     def get(self,*args,**kwargs):
@@ -38,16 +42,41 @@ class PagarPedido(View):
                 carrinho[str(variacao.id)]["quantidade"] = qtd_variacao_estoque
                 carrinho[str(variacao.id)]["preco"] = qtd_variacao_estoque * preco_unitario
                 carrinho[str(variacao.id)]["preco_promo"] = qtd_variacao_estoque * preco_unitario_promo
-
-                               
+        
         if estoque_insuficiente: 
             messages.error(self.request, "Quantidade de produtos do carrinho insuficiente, a quantidade foi substituida pela disponivel. ")
             self.request.session.save()
-        return render(self.request, self.template_name, dict_pagar)
-
         
-class FinalizarPedido(ListView):
-    pass
+        qtd_total_carrinho = sum((cart["quantidade"] for cart in carrinho.values()))
+        valor_total_carrinho = sum([item["preco_promo"] if item["preco_promo"] else item["preco"] for key,item in carrinho.items()])
+        
+      
+        pedido = Pedido(
+            user=self.request.user,
+            total=valor_total_carrinho,
+            qtd_total=qtd_total_carrinho,
+            status="C"
+        )
+        pedido.save()
+        ItemPedido.objects.bulk_create(
+            [
+                ItemPedido(**{"pedido":pedido, "produto":item["nome_produto"], "variacao":item["nome_variacao"], "id_variacao":item["id_variacao"], "preco_promo":item["preco_promo"], "preco":item["preco"], "quantidade":item["quantidade"], "imagem":item["img"] }) for item in carrinho.values()
+            ]
+        )
+       
+        """dict_pagar = {
+            "qtd_total_carrinho":qtd_total_carrinho,
+            "valor_total_carrinho":valor_total_carrinho
+        }"""
+        del self.request.session["carrinho"]
+        
+        return redirect(
+            reverse('pagar-pedido', kwargs={'pk':pedido.pk}) 
+        )
+        #return render(self.request, self.template_name, dict_pagar)
 
 class DetalhePedido(ListView):
+    pass
+
+class ListaPedido(ListView):
     pass
