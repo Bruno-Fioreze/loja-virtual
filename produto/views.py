@@ -8,15 +8,26 @@ from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
-
+from django.db.models import Q
 
 
 class ListagemProduto(ListView):
     queryset = Produto.objects.all().order_by("id")
     context_object_name = "produtos"
-    paginate_by = 1
-    pass
+    paginate_by = 10
+    ordering = ["-id"]
 
+class BuscaProduto(ListView):
+    model = Produto
+    context_object_name = "produtos"
+    def get_queryset(self, *args, **kwargs):
+        query = super().get_queryset(*args, **kwargs)
+        termo = self.request.GET.get("termo") or self.request.session["termo"]
+        if not termo:
+            return query
+        query = query.filter(Q(nome__contains=termo) | Q(descricao_curta__icontains=termo)  | Q(descricao_longa__icontains=termo)) 
+        self.request.session.save()
+        return query
 
 class DetalheProduto(DetailView):
     queryset = Produto.objects.all()
@@ -65,7 +76,7 @@ class AdicionarProduto(View):
             carrinho[variacao_id]["preco_unitario_promo"] = variacao.preco_promo
             carrinho[variacao_id]["preco_unitario"] = variacao.preco
         else:
-            carrinho[variacao_id] = get_dict_carrinho(variacao,produto)
+            carrinho[variacao_id] = get_dict_carrinho(variacao, produto)
 
         messages.success(self.request,"Produto foi adicionado ao seu carrinho!")
         self.request.session["carrinho"] = carrinho
